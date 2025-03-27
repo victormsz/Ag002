@@ -16,10 +16,12 @@ frame           = pd.read_sql("select * from statlog.germancredit", dbConnection
 
 pd.set_option('display.expand_frame_repr', False) #para não truncar as colunas
 
-X=frame[['laufkont','laufzeit','moral','verw','hoehe','sparkont','beszeit','rate','famges','buerge','wohnzeit','verm','alter','weitkred','wohn','bishkred','beruf','pers','telef','gastarb']]
-y=frame['kredit']
+frame.columns = ['Id','status', 'duration', 'credit_history', 'purpose', 'amount', 'savings', 'employment_duration', 'installment_rate', 'personal_status_sex', 'other_debtors', 'present_residence', 'property', 'age', 'other_installment_plans', 'housing', 'number_credits', 'job', 'people_liable', 'telephone', 'foreign_worker', 'credit_risk']
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=522) # 522 = minha matricula
+X=frame.drop('credit_risk', axis=1)
+y=frame['credit_risk']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42) # 522 = minha matricula
 
 # Normalização dos dados
 scaler = preprocessing.StandardScaler()
@@ -32,7 +34,7 @@ MLPclf = MLPClassifier(hidden_layer_sizes=(10),
                     verbose=True,
                     learning_rate_init=0.001,
                     max_iter=10000,
-                    tol=1e-5,)
+                    tol=1e-4,)
 
 MLPclf.fit(X_train,y_train)
 
